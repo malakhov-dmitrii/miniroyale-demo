@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Icons } from '@/components/icons';
 import { NavItem, siteConfig } from '@/config/site';
@@ -10,8 +9,8 @@ interface MainNavProps {
 export function MainNav({ items }: MainNavProps) {
   return (
     <div className="flex gap-6 md:gap-10">
-      <a href="/" className="hidden items-center space-x-2 md:flex">
-        <Icons.logo className="h-6 w-6" />
+      <a href="/" className="items-center hidden space-x-2 md:flex">
+        <Icons.logo />
         <span className="hidden font-bold sm:inline-block">{siteConfig.name}</span>
       </a>
       {items?.length ? (
