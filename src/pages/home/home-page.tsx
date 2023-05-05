@@ -7,7 +7,7 @@ import { getAvatarUrl } from '@/lib/dicebear';
 import { cn } from '@/lib/utils';
 import { Link } from '@tanstack/router';
 import { Car, Eye, Film, Plane } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const PlaceholderCard = () => <div className="w-full h-[350px] bg-slate-400 animate-pulse rounded"></div>;
 
@@ -18,8 +18,8 @@ function CharacterCard(props: { character: Character }) {
 
   return (
     <Link to="/character/$id" params={{ id }}>
-      <Card className="cursor-pointer hover:shadow-lg transition group">
-        <div className="aspect-square overflow-hidden rounded-t-md">
+      <Card className="transition cursor-pointer hover:shadow-lg group">
+        <div className="overflow-hidden aspect-square rounded-t-md">
           <img
             className={cn(
               'h-full w-full bg-slate-200 group-hover:scale-125 group-hover:filter group-hover:grayscale transition',
@@ -34,23 +34,23 @@ function CharacterCard(props: { character: Character }) {
           <div className="flex justify-between">
             <CardTitle>{props.character.name}</CardTitle>
             <Eye
-              className="w-6 h-6 bg-slate-300 p-1 rounded-full shadow"
+              className="w-6 h-6 p-1 rounded-full shadow bg-slate-300"
               style={{
                 color: props.character.eye_color,
               }}
             />
           </div>
-          <div className="flex divide-x text-sm text-muted-foreground">
-            <div className="flex gap-2 items-center pr-2">
+          <div className="flex text-sm divide-x text-muted-foreground">
+            <div className="flex items-center gap-2 pr-2">
               <Film className="w-4 h-4" />
               <p>{props.character.films.length}</p>
             </div>
 
-            <div className="flex gap-2 items-center px-2">
+            <div className="flex items-center gap-2 px-2">
               <Car className="w-4 h-4" />
               <p>{props.character.vehicles.length}</p>
             </div>
-            <div className="flex gap-2 items-center px-2">
+            <div className="flex items-center gap-2 px-2">
               <Plane className="w-4 h-4" />
               <p>{props.character.starships.length}</p>
             </div>
@@ -66,9 +66,13 @@ const HomePage = () => {
   const [pageIndex, setPageIndex] = useState(1);
   const data = useCharacters(pageIndex);
 
+  useEffect(() => {
+    setSearch('');
+  }, [pageIndex]);
+
   return (
     <>
-      <div className="flex flex-wrap justify-between items-end">
+      <div className="flex flex-wrap items-end justify-between">
         <TypographyH1>Star Wars Characters</TypographyH1>
 
         <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -84,7 +88,7 @@ const HomePage = () => {
           />
         </div>
       </div>
-      <div className="grid xl:grid-cols-5 md:grid-cols-4 grid-flow-row lg:grid-cols-5 grid-cols-2 mt-8 gap-4">
+      <div className="grid grid-flow-row grid-cols-2 gap-4 mt-8 xl:grid-cols-5 md:grid-cols-4 lg:grid-cols-5">
         {data.isLoading && Array.from({ length: 10 }).map((_, i) => <PlaceholderCard key={i} />)}
         {data.data?.results
           ?.filter(i => i.name.toLowerCase().includes(search.toLowerCase().trim()))
@@ -92,7 +96,7 @@ const HomePage = () => {
             <CharacterCard key={character.url} character={character}></CharacterCard>
           ))}
       </div>
-      <div className="flex gap-4 justify-center mt-4">
+      <div className="flex justify-center gap-4 mt-4">
         <Button disabled={!data.data?.previous} variant="outline" onClick={() => setPageIndex(pageIndex - 1)}>
           Previous
         </Button>
